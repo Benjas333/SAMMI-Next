@@ -2,6 +2,6 @@
 
 📝 Enforce the default export is a function with no parameters.
 
-💼 This rule is enabled in the ✅ `recommended` config.
+💼 This rule is enabled in the `requiredEntry` config.
 
 <!-- end auto-generated rule header -->

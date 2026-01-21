@@ -29,10 +29,7 @@
         "types"
     ],
     "license": "MIT",
-    "private": false,
-    "publishConfig": {
-        "access": "public"
-    },
+    "private": true,
     "devDependencies": {
         "rimraf": "^6.1.2"
     }

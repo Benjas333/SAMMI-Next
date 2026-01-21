@@ -18,7 +18,7 @@
         }
     },
     "description": "An ESLint plugin for projects using SAMMI Next",
-    "files": ["dist/*"],
+    "files": ["lib/*"],
     "keywords": [
         "typescript",
         "sammi",

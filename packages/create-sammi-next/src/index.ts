@@ -333,7 +333,7 @@ async function init() {
             return;
         }
 
-        if (file === 'external.html' || file === 'README.md' || file === 'sammi.config.json') {
+        if (file === 'external.html' || file === 'README.md' || file.startsWith('sammi.config.')) {
             const templatePath = path.join(templateDir, file);
             const templateContent = fs.readFileSync(templatePath, 'utf-8');
             const updatedContent = templateContent
@@ -351,7 +351,9 @@ async function init() {
         write(file)
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const pkg = JSON.parse(fs.readFileSync(path.join(templateDir, 'package.json'), 'utf-8'));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     pkg.name = extensionID;
 
     write('package.json', JSON.stringify(pkg, null, 4) + '\n');

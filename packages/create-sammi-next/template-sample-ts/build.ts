@@ -133,7 +133,7 @@ ${content}
             this.command = this.commandRegex.test(this.script);
         }
         content.push('[insert_command]', this.command ? `${this.globalName}.default();` : '', '');
-        content.push('[insert_hook]', '', ''); // TODO: maybe add hook retro-compatibility
+        content.push('[insert_hook]', '', '');
         content.push('[insert_script]', this.script || '', '');
         this.updateOver();
         content.push('[insert_over]', this.over && this.over != '{}' ? this.over : '', '');
