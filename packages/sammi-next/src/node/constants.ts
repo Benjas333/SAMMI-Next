@@ -22,6 +22,6 @@ function findPackageDir() {
     while (!initPath.endsWith('sammi-next')) {
         initPath = path.resolve(initPath, '..');
     }
-    return path.resolve(initPath, '..');
+    return initPath;
 }
 export const SAMMI_NEXT_PACKAGE_DIR = findPackageDir();

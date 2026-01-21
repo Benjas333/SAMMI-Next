@@ -23,6 +23,7 @@ export default defineConfig({
         'node:fs',
         'node:path',
         'node:url',
+        'node:events',
         'chokidar',
         'tsdown',
         'jiti',
