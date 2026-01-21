@@ -31,7 +31,7 @@ function readOptionalFile(path: string): string | undefined {
 const CommandRE = /\w+\(\w+,\s*{\s*default:/gm;
 
 function generateSEF(options: ResolvedBuildOptions): string {
-    const { config, mode } = options;
+    const { config, rootDir, mode } = options;
     const content = [];
 
     const required_files: {
@@ -59,10 +59,10 @@ function generateSEF(options: ResolvedBuildOptions): string {
     const external = readOptionalFile(config.external);
     content.push("[insert_external]", external ? `<div id="${config.id}-external">${external}</div>` : "", "");
 
-    const script = fs.readFileSync(config.entry, "utf-8");
-    content.push("[insert_command]", CommandRE.test(script) ? `${GLOBAL_NAME}.${config.id}.default()` : "", "");
+    const js_script = fs.readFileSync(path.join(rootDir, config.out.dir, config.out.js), "utf-8");
+    content.push("[insert_command]", CommandRE.test(js_script) ? `${GLOBAL_NAME}.${config.id}.default()` : "", "");
     content.push("[insert_hook]", "", "") // TODO: maybe add hook retro-compatibility
-    content.push("[insert_script]", script, "");
+    content.push("[insert_script]", js_script, "");
 
     let over = readOptionalFile(config.over);
     if (over && mode === BuildMode.PRODUCTION) {
