@@ -8,10 +8,15 @@
     "build:types": "bun run gen:types",
     "build:next": "bun run --filter sammi-next build",
     "build:create-next": "bun run --filter create-sammi-next build",
-    "build:all": "bun run build:types && bun run build:next && bun run build:create-next"
+    "build:all": "bun run build:types && bun run build:next && bun run build:create-next",
+    "format": "bun x prettier --write ."
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@eslint/js": "^9.39.2",
+    "@types/bun": "latest",
+    "@types/node": "^25.0.9",
+    "eslint": "^9.39.2",
+    "typescript-eslint": "^8.53.0"
   },
   "peerDependencies": {
     "typescript": "^5"

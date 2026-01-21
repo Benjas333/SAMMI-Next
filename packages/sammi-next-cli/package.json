@@ -1,5 +1,5 @@
 {
-    "name": "create-sammi-next",
+    "name": "@sammi-next/cli",
     "version": "1.0.0",
     "type": "module",
     "license": "MIT",
@@ -8,18 +8,17 @@
         "url": "https://github.com/Benjas333"
     },
     "bin": {
-        "create-sammi-next": "index.js",
-        "csn": "index.js"
+        "sammi-next": "bin/sammi-next.js"
     },
     "files": [
-        "index.js",
-        "template-*",
+        "bin",
         "dist"
     ],
     "scripts": {
-        "dev": "tsdown --watch",
+        "dev": "premove dist && bun run build --watch --dev",
         "build": "tsdown",
-        "typecheck": "tsc",
+        "lint": "eslint --cache --ext .ts src/**",
+        "format": "prettier --write --cache --parser typescript \"src/**/*.ts\"",
         "prepublishOnly": "bun run build"
     },
     "engines": {
@@ -28,17 +27,21 @@
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Benjas333/SAMMI-Next.git",
-        "directory": "packages/create-sammi-next"
+        "directory": "packages/sammi-next-cli"
     },
     "bugs": {
-        "url": "https://github.com/Benjas333/SAMMI-Next/issues"
+        "url": "https://github.com/Benjas333/SAMMI-Next.git"
     },
-    "homepage": "https://github.com/Benjas333/SAMMI-Next/tree/master/packages/create_sammi-next#readme",
+    "homepage": "https://github.com/Benjas333/SAMMI-Next/tree/master/packages/sammi-next-cli#readme",
     "devDependencies": {
-        "@clack/prompts": "^0.11.0",
         "@types/node": "^25.0.9",
-        "mri": "^1.2.0",
+        "cac": "^6.7.14",
         "picocolors": "^1.1.1",
+        "premove": "^4.0.0"
+    },
+    "dependencies": {
+        "ajv": "^8.17.1",
+        "chokidar": "^5.0.0",
         "tsdown": "^0.20.0-beta.3"
     }
 }

@@ -1,0 +1,19 @@
+{
+    "name": "extension-sample",
+    "type": "module",
+    "dependencies": {
+        "sammi-next": "workspace:sammi-next",
+        "sammi-bridge-types": "workspace:sammi-bridge-types"
+    },
+    "devDependencies": {
+        "@types/minimist": "^1.2.5",
+        "chokidar": "^5.0.0",
+        "minimist": "^1.2.8",
+        "tsdown": "^0.20.0-beta.3",
+        "typescript": "^5"
+    },
+    "scripts": {
+        "dev": "bun run build.ts --watch --dev",
+        "build": "bun run build.ts"
+    }
+}

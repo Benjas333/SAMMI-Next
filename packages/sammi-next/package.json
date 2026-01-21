@@ -1,35 +1,66 @@
 {
-        "name": "sammi-next",
-        "version": "1.0.0",
-        "description": "Type definitions for the latest SAMMI Extension Builder API",
-        "author": {
-                "name": "Benjas333",
-                "url": "https://github.com/Benjas333"
+    "name": "sammi-next",
+    "version": "1.0.0",
+    "author": {
+        "name": "Benjas333",
+        "url": "https://github.com/Benjas333"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Benjas333/SAMMI-Next.git",
+        "directory": "packages/sammi-next"
+    },
+    "bugs": {
+        "url": "https://github.com/Benjas333/SAMMI-Next/issues"
+    },
+    "homepage": "https://github.com/Benjas333/SAMMI-Next",
+    "main": "./dist/runtime/index.mjs",
+    "module": "./dist/runtime/index.mjs",
+    "dependencies": {
+        "ajv": "^8.17.1",
+        "cac": "^6.7.14",
+        "chokidar": "^5.0.0",
+        "jiti": "^2.6.1",
+        "picocolors": "^1.1.1",
+        "sammi-bridge-types": "workspace:sammi-bridge-types",
+        "tsdown": "^0.20.0-beta.4"
+    },
+    "exports": {
+        ".": {
+            "types": "./dist/runtime/index.d.mts",
+            "import": "./dist/runtime/index.mjs"
         },
-        "main": "dist/index",
-        "module": "dist/index",
-        "files": ["dist/*"],
-        "scripts": {
-                "build": "bun x tsc"
-        },
-        "repository": {
-                "type": "git",
-                "url": "git+https://github.com/Benjas333/SAMMI-Next.git",
-                "directory": "packages/sammi-next"
-        },
-        "dependencies": {
-                "sammi-bridge-types": "workspace:sammi-bridge-types"
-        },
-        "keywords": [
-                "typescript",
-                "sammi",
-                "sammi-next",
-                "sammi-next-builder",
-                "types"
-        ],
-        "license": "MIT",
-        "private": false,
-        "publishConfig": {
-                "access": "public"
+        "./config": {
+            "types": "./dist/shared/config-types.d.mts",
+            "import": "./dist/shared/config-types.mjs"
         }
+    },
+    "bin": {
+        "sammi-next": "./dist/node/cli.mjs"
+    },
+    "description": "Modern builder and runtime for SAMMI Extensions",
+    "files": [
+        "dist/**/*",
+        ".sammi/**/*"
+    ],
+    "keywords": [
+        "typescript",
+        "sammi",
+        "sammi-next",
+        "sammi-next-builder"
+    ],
+    "license": "MIT",
+    "private": false,
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "bun run tsdown",
+        "dev": "bun run tsdown --watch"
+    },
+    "type": "module",
+    "types": "./dist/runtime/index.d.mts",
+    "devDependencies": {
+        "@types/node": "^25.0.9"
+    }
 }

@@ -5,27 +5,21 @@
 
         "module": "esnext",
         "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
         "esModuleInterop": true,
 
         "outDir": "./dist",
         "rootDir": "./src",
         "sourceMap": true,
-        "declaration": true,
-        "declarationMap": true,
 
+        "jsx": "react-jsx",
         "strict": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "allowJs": false,
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-
-        "paths": {
-            "@runtime/*": ["./src/runtime/*"],
-            "@node/*": ["./src/node/*"],
-            "@shared/*": ["./src/shared/*"],
-        },
+        "allowJs": true,
+        // "noEmit": true,
+        "declaration": true,
+        "emitDeclarationOnly": true
     },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules", "dist"],
+    "include": ["src/**/*"]
 }

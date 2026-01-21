@@ -1,0 +1,19 @@
+{
+    "include": ["src/**/*", "tsdown.config.mts"],
+    "compilerOptions": {
+        "rootDir": ".",
+        "target": "es2023",
+        "module": "preserve",
+        "moduleResolution": "bundler",
+        "types": ["node"],
+        "noEmit": true,
+        "strict": true,
+        "noImplicitOverride": true,
+        "noUnusedLocals": true,
+        "useUnknownInCatchVariables": false,
+        "esModuleInterop": true,
+        "isolatedDeclarations": false,
+        "declaration": false,
+        "resolveJsonModule": true,
+    }
+}

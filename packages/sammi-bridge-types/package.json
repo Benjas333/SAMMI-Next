@@ -1,39 +1,39 @@
 {
-        "name": "sammi-bridge-types",
-        "version": "1.0.0",
-        "description": "Type definitions for SAMMI Bridge",
-        "author": {
-                "name": "Benjas333",
-                "url": "https://github.com/Benjas333"
-        },
-        "main": "src/index.d.ts",
-        "module": "src/index.d.ts",
-        "files": ["src/*"],
-        "scripts": {
-                "gen:types": "rimraf temp && bun run ../../scripts/fetch-sammi-commands.js && bun x tsc",
-                "format:types": "bun run ../../scripts/format-sammi-commands.js && rimraf temp",
-                "build": "bun run gen:types && bun run format:types"
-        },
-        "repository": {
-                "type": "git",
-                "url": "git+https://github.com/Benjas333/SAMMI-Next.git",
-                "directory": "packages/sammi-bridge-types"
-        },
-        "dependencies": {
-                "sammi-websocket-types": "workspace:sammi-websocket-types"
-        },
-        "keywords": [
-                "typescript",
-                "sammi",
-                "sammi-bridge",
-                "types"
-        ],
-        "license": "MIT",
-        "private": false,
-        "publishConfig": {
-                "access": "public"
-        },
-        "devDependencies": {
-                "rimraf": "^6.1.2"
-        }
+    "name": "sammi-bridge-types",
+    "version": "1.0.0",
+    "description": "Type definitions for SAMMI Bridge",
+    "author": {
+        "name": "Benjas333",
+        "url": "https://github.com/Benjas333"
+    },
+    "main": "src/index.d.ts",
+    "module": "src/index.d.ts",
+    "files": ["src/*"],
+    "scripts": {
+        "gen:types": "rimraf temp && bun run ../../scripts/fetch-sammi-commands.ts && bun x tsc",
+        "format:types": "bun run ../../scripts/format-sammi-commands.ts && rimraf temp",
+        "build": "bun run gen:types && bun run format:types"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Benjas333/SAMMI-Next.git",
+        "directory": "packages/sammi-bridge-types"
+    },
+    "dependencies": {
+        "sammi-websocket-types": "workspace:sammi-websocket-types"
+    },
+    "keywords": [
+        "typescript",
+        "sammi",
+        "sammi-bridge",
+        "types"
+    ],
+    "license": "MIT",
+    "private": false,
+    "publishConfig": {
+        "access": "public"
+    },
+    "devDependencies": {
+        "rimraf": "^6.1.2"
+    }
 }

@@ -1,0 +1,1 @@
+{"version":3,"file":"index.mjs","names":[],"sources":["../../src/rules/index.ts"],"sourcesContent":["import { enforceDefaultExportFunction } from \"./enforce-default-export-function\";\n\nexport const rules = {\n    'enforce-default-export-function': enforceDefaultExportFunction\n};\n"],"mappings":";;;AAEA,MAAa,QAAQ,EACjB,mCAAmC,8BACtC"}

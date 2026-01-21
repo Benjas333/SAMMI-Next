@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "target": "es2016",
+        "module": "nodenext",
+        "esModuleInterop": true,
+
+        "outDir": "./lib",
+        "rootDir": ".",
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+
+        "strict": true,
+        "noImplicitAny": false,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "allowJs": true,
+
+        "types": ["vitest/globals"]
+    },
+    "include": ["src/**/*.ts", "eslint.config.mjs"],
+    "exclude": ["node_modules", "lib"]
+}

@@ -1,0 +1,24 @@
+{
+    "name": "extension-sample",
+    "type": "module",
+    "dependencies": {
+        "sammi-next": "workspace:sammi-next",
+        "sammi-bridge-types": "workspace:sammi-bridge-types"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.2",
+        "@types/minimist": "^1.2.5",
+        "chokidar": "^5.0.0",
+        "eslint": "^9.39.2",
+        "eslint-plugin-sammi-next": "workspace:eslint-plugin-sammi-next",
+        "minimist": "^1.2.8",
+        "tsdown": "^0.20.0-beta.3",
+        "typescript": "^5",
+        "typescript-eslint": "^8.53.0"
+    },
+    "scripts": {
+        "dev": "sammi-next dev",
+        "build": "sammi-next",
+        "lint": "eslint ."
+    }
+}
