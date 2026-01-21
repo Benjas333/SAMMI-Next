@@ -31,7 +31,7 @@ function readOptionalFile(path: string): string | undefined {
 const CommandRE = /\w+\(\w+,\s*{\s*default:/gm;
 
 function generateSEF(options: ResolvedBuildOptions): string {
-    const { config, rootDir, mode } = options;
+    const { config, mode } = options;
     const content = [];
 
     const required_files: {
@@ -56,15 +56,15 @@ function generateSEF(options: ResolvedBuildOptions): string {
         content.push(`[${field.header}]`, field.content, "");
     }
 
-    const external = readOptionalFile(path.join(rootDir,  config.external));
+    const external = readOptionalFile(config.external);
     content.push("[insert_external]", external ? `<div id="${config.id}-external">${external}</div>` : "", "");
 
-    const script = fs.readFileSync(path.join(rootDir, config.entry), "utf-8");
+    const script = fs.readFileSync(config.entry, "utf-8");
     content.push("[insert_command]", CommandRE.test(script) ? `${GLOBAL_NAME}.${config.id}.default()` : "", "");
     content.push("[insert_hook]", "", "") // TODO: maybe add hook retro-compatibility
     content.push("[insert_script]", script, "");
 
-    let over = readOptionalFile(path.join(rootDir, config.over));
+    let over = readOptionalFile(config.over);
     if (over && mode === BuildMode.PRODUCTION) {
         over = JSON.stringify(JSON.parse(over));
     }
@@ -73,10 +73,10 @@ function generateSEF(options: ResolvedBuildOptions): string {
 }
 
 function generatePreview(options: ResolvedBuildOptions): string {
-    const { config, rootDir } = options;
+    const { config } = options;
 
-    const external = readOptionalFile(path.join(rootDir,  config.external));
-    const script = fs.readFileSync(path.join(rootDir, config.entry), "utf-8");
+    const external = readOptionalFile(config.external);
+    const script = fs.readFileSync(config.entry, "utf-8");
     return fs
         .readFileSync(path.join(SAMMI_NEXT_PACKAGE_DIR, ".sammi", "preview.blueprint.html"), "utf-8")
         .replace(/{{EXTERNAL}}/g, external ? `<div id="${config.id}-external">${external}</div>` : "")
@@ -120,7 +120,7 @@ async function buildOnce(options: ResolvedBuildOptions) {
 }
 
 export async function buildExtension(options: ResolvedBuildOptions) {
-    const { config, rootDir, mode } = options;
+    const { config, mode } = options;
 
     console.info(
         colors.cyan(
@@ -143,11 +143,10 @@ export async function buildExtension(options: ResolvedBuildOptions) {
         console.info(BUILD_PREFIX, colors.cyan("watching for file changes..."));
 
         const watchPaths = [
-            config.entry,
+            path.dirname(config.entry),
             config.external,
             config.over,
         ].filter(Boolean);
-        watchPaths[0] = path.dirname(path.join(rootDir, watchPaths[0]));
 
         const watcher = chokidar.watch(watchPaths, { ignoreInitial: true });
         let timer: NodeJS.Timeout | null = null;
