@@ -34,10 +34,22 @@ const defaultInitExtensionOptions: initExtensionOptions = {
 export function initExtension(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     config: Record<string, any>,
-    options: initExtensionOptions = {
-        skipProxying: false,
-    }
-): ExtensionConfig {
+    options: Omit<initExtensionOptions, 'skipProxying'> & {
+        skipProxying: true
+    },
+): ExtensionConfig
+export function initExtension(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    config: Record<string, any>,
+    options?: Omit<initExtensionOptions, 'skipProxying'> & {
+        skipProxying: false
+    },
+): Readonly<ExtensionConfig>
+export function initExtension(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    config: Record<string, any>,
+    options?: initExtensionOptions
+): Readonly<ExtensionConfig> | ExtensionConfig {
     let response: ExtensionConfig = {
         id: config.id as string,
         name: config.name as string,
@@ -156,10 +168,7 @@ const defaultInsertCommandSectionOptions: insertCommandSectionOptions = {
  */
 export function insertCommandSection(
     callback: () => void,
-    options: insertCommandSectionOptions = {
-        waitForSammiclient: true,
-        waitForSAMMIExtensions: false,
-    },
+    options?: insertCommandSectionOptions,
 ): () => void {
     const settings = Object.assign(defaultInsertCommandSectionOptions, options);
 
