@@ -24,13 +24,13 @@ SAMMI Next is a [SAMMI] Bridge extensions build tool inspired on [Vite] that sig
 - A cli that bundles your code with [tsdown], pre-configured to output highly optimized code for production.
 
 ## Packages
-| Package                                                    | Version                                                                                              |
-| ---------------------------------------------------------- | :--------------------------------------------------------------------------------------------------- |
-| [sammi-next](packages/sammi-next/)                         | ![sammi-next version](https://img.shields.io/npm/v/sammi-next.svg?label=%20)                         |
-| [create-sammi-next](packages/create-sammi-next/)           | ![create-sammi-next version](https://img.shields.io/npm/v/create-sammi-next.svg?label=%20)           |
-| [eslint-plugin](packages/eslint-plugin/)                   | ![eslint-plugin version](https://img.shields.io/npm/v/eslint-plugin-sammi-next.svg?label=%20)        |
-| [sammi-bridge-types](packages/sammi-bridge-types/)         | ![sammi-bridge-types version](https://img.shields.io/npm/v/sammi-bridge-types.svg?label=%20)         |
-| [sammi-websocket-types](packages/sammi-websocket-types/)   | ![sammi-websocket-types version](https://img.shields.io/npm/v/sammi-websocket-types.svg?label=%20)   |
+| Package                                                    | Version (click for changelogs)                                                                                                                       |
+| ---------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [sammi-next](packages/sammi-next/)                         | [![sammi-next version](https://img.shields.io/npm/v/sammi-next.svg?label=%20)](packages/sammi-next/CHANGELOG.md)                                     |
+| [create-sammi-next](packages/create-sammi-next/)           | [![create-sammi-next version](https://img.shields.io/npm/v/create-sammi-next.svg?label=%20)](packages/create-sammi-next/CHANGELOG.md)                |
+| [eslint-plugin](packages/eslint-plugin/)                   | [![eslint-plugin version](https://img.shields.io/npm/v/eslint-plugin-sammi-next.svg?label=%20)](packages/eslint-plugin/CHANGELOG.md)                 |
+| [sammi-bridge-types](packages/sammi-bridge-types/)         | [![sammi-bridge-types version](https://img.shields.io/npm/v/sammi-bridge-types.svg?label=%20)](packages/sammi-bridge-types/CHANGELOG.md)             |
+| [sammi-websocket-types](packages/sammi-websocket-types/)   | [![sammi-websocket-types version](https://img.shields.io/npm/v/sammi-websocket-types.svg?label=%20)](packages/sammi-websocket-types/CHANGELOG.md)    |
 
 
 ## Contribution
