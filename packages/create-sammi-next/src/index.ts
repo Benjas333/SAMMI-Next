@@ -196,11 +196,11 @@ async function init() {
                 message: 'Extension name:',
                 defaultValue: defaultExtensionName,
                 placeholder: defaultExtensionName,
-                validate: (value) => { if (!value || !isValidExtensionName(value)) return 'Invalid extension name' }
+                validate: (value) => { if (!isValidExtensionName(value.trim())) return 'Invalid extension name' }
             });
             if (prompts.isCancel(projectName)) return cancel();
 
-            extensionName = projectName;
+            extensionName = projectName.trim();
         }
     }
     const defaultExtensionID = toValidExtensionID(extensionName);
@@ -320,15 +320,27 @@ async function init() {
         `template-${template}`,
     );
 
-    const write = (file: string, content?: string) => {
-        const targetPath = path.join(root, renameFiles[file] ?? file);
+    const write = (file: string, content?: string, rootDir = templateDir) => {
+        const fullPath = path.join(rootDir, file);
+        const stats = fs.statSync(fullPath);
+        const targetPath = rootDir === templateDir
+            ? path.join(root, renameFiles[file] ?? file)
+            : path.join(root, rootDir.substring(templateDir.length), renameFiles[file] ?? file);
+        if (stats.isDirectory()) {
+            fs.mkdirSync(targetPath, { recursive: true });
+            const files = fs.readdirSync(fullPath);
+            for (const file of files) {
+                write(file, undefined, fullPath);
+            }
+            return;
+        }
         if (content) {
             fs.writeFileSync(targetPath, content);
             return;
         }
 
-        if (file.endsWith('.html') || file === 'README.md' || file.startsWith('sammi.config.')) {
-            const templatePath = path.join(templateDir, file);
+        if (file === 'external.html' || file === 'README.md' || file.startsWith('sammi.config.')) {
+            const templatePath = fullPath;
             const templateContent = fs.readFileSync(templatePath, 'utf-8');
             const updatedContent = templateContent
                 .replace(/{{EXTENSION_ID}}/g, extensionID)
@@ -338,7 +350,7 @@ async function init() {
             return;
         }
 
-        copy(path.join(templateDir, file), targetPath);
+        copy(fullPath, targetPath);
     }
 
     const files = fs.readdirSync(templateDir);
@@ -403,7 +415,7 @@ function emptyDir(dir: string) {
 }
 
 function isValidExtensionName(projectName: string) {
-    return /^[a-zA-Z0-9 -_]+$/.test(projectName);
+    return /^[a-zA-Z0-9 -_]*$/.test(projectName);
 }
 
 function isValidExtensionID(projectName: string) {

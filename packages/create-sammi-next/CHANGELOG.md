@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning].
 
 - /
 
+## [1.0.0] - 2026-01-22
+
+### Changed
+
+- README.md
+- Templates dependency sammi-next version up to 1.5.4
+
+### Fixed
+
+- Place-holder variables replacing (this time fr).
+
 ## [0.0.2] - 2026-01-22
 
 ### Added

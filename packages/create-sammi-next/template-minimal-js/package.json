@@ -15,6 +15,6 @@
     },
     "type": "module",
     "dependencies": {
-        "sammi-next": "^1.5.0"
+        "sammi-next": "^1.5.4"
     }
 }
