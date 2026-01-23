@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning].
 
 - /
 
+## [1.5.4] - 2026-01-22
+
+### Fixed
+
+- inlineOnly warning for sammi-next/browser (node).
+
 ## [1.5.3] - 2026-01-22
 
 ### Added

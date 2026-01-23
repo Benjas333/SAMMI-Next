@@ -106,6 +106,7 @@ export function mergeBuilderOptions(options: BuildOptions) {
             name: `${GLOBAL_NAME}.${config.id}`,
             exports: 'named',
         },
+        inlineOnly: ["**"],
         // plugins: [
         //     nodePolyfills(),
         // ],
