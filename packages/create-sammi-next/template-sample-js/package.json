@@ -1,13 +1,12 @@
 {
-    "name": "template-sample-ts",
+    "name": "template-sample-js",
     "devDependencies": {
         "@eslint/js": "^9.39.2",
         "@microsoft/eslint-plugin-sdl": "^1.1.0",
         "eslint": "^9.39.2",
         "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-sammi-next": "^1.0.0",
-        "typescript": "^5",
-        "typescript-eslint": "^8.53.0"
+        "globals": "^17.0.0"
     },
     "scripts": {
         "dev": "sammi-next dev",

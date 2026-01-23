@@ -21,12 +21,13 @@ const CONFIG = initExtension(extensionConfig);
 // Use getExternalSection() to retrieve your [insert_external] section.
 const EXTERNAL = getExternalSection(CONFIG.id);
 
-const title = EXTERNAL.querySelector('#title') as HTMLTitleElement;
+const title = EXTERNAL.querySelector('#title');
+
 title.innerText = `${CONFIG.name} - v${CONFIG.version}`;
 
-const inputA = EXTERNAL.querySelector("#number-a") as HTMLInputElement;
-const inputB = EXTERNAL.querySelector("#number-b") as HTMLInputElement;
-const resultEl = EXTERNAL.querySelector('#result') as HTMLSpanElement;
+const inputA = EXTERNAL.querySelector("#number-a");
+const inputB = EXTERNAL.querySelector("#number-b");
+const resultEl = EXTERNAL.querySelector('#result');
 
 // The default export is your [insert_command] section. It must be a function.
 export default insertCommandSection(() => {

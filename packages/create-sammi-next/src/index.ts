@@ -4,6 +4,7 @@ import mri from 'mri';
 import * as prompts from '@clack/prompts';
 import colors from 'picocolors';
 import { fileURLToPath } from 'node:url';
+import { version as VERSION } from '../package.json';
 
 const {
     blue,
@@ -60,8 +61,8 @@ interface Template {
 const TEMPLATES_OPTIONS: Template[] = [
     {
         name: 'vanilla',
-        display: 'Vanilla (standard starter)',
-        color: green,
+        display: 'Vanilla',
+        color: magenta,
         variants: [
             {
                 name: 'vanilla-ts',
@@ -72,42 +73,35 @@ const TEMPLATES_OPTIONS: Template[] = [
                 name: 'vanilla-js',
                 display: 'JavaScript',
                 color: yellow,
-            }
-        ]
-    },
-    {
-        name: 'sample',
-        display: 'Sample (demo + comments)',
-        color: magenta,
-        variants: [
+            },
             {
                 name: 'sample-ts',
-                display: 'TypeScript',
+                display: 'TypeScript (sample + comments)',
                 color: blue,
             },
             {
                 name: 'sample-js',
-                display: 'JavaScript',
+                display: 'JavaScript (sample + comments)',
                 color: yellow,
-            }
-        ]
+            },
+        ],
     },
     {
-        name: 'blank',
-        display: 'Blank (barebone)',
+        name: "minimal",
+        display: "Minimal (barebone)",
         color: gray,
         variants: [
             {
-                name: 'blank-ts',
+                name: 'minimal-ts',
                 display: 'TypeScript',
                 color: blue,
             },
             {
-                name: 'blank-js',
+                name: 'minimal-js',
                 display: 'JavaScript',
                 color: yellow,
-            }
-        ]
+            },
+        ],
     },
     // {
     //     name: 'react',
@@ -338,7 +332,8 @@ async function init() {
             const templateContent = fs.readFileSync(templatePath, 'utf-8');
             const updatedContent = templateContent
                 .replace(/{{EXTENSION_ID}}/g, extensionID)
-                .replace(/{{EXTENSION_NAME}}/g, extensionName);
+                .replace(/{{EXTENSION_NAME}}/g, extensionName)
+                .replace(/{{CREATE_VERSION}}/g, VERSION);
             fs.writeFileSync(targetPath, updatedContent);
             return;
         }
