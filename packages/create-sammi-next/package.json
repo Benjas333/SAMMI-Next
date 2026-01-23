@@ -1,6 +1,6 @@
 {
     "name": "create-sammi-next",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "type": "module",
     "license": "MIT",
     "author": {
@@ -34,6 +34,13 @@
         "url": "https://github.com/Benjas333/SAMMI-Next/issues"
     },
     "homepage": "https://github.com/Benjas333/SAMMI-Next/tree/master/packages/create_sammi-next#readme",
+    "keywords": [
+        "cli",
+        "sammi",
+        "sammi-next",
+        "create-sammi-next",
+        "sammi-next-cli"
+    ],
     "devDependencies": {
         "@clack/prompts": "^0.11.0",
         "@types/node": "^25.0.9",

@@ -327,7 +327,7 @@ async function init() {
             return;
         }
 
-        if (file === 'external.html' || file === 'README.md' || file.startsWith('sammi.config.')) {
+        if (file.endsWith('.html') || file === 'README.md' || file.startsWith('sammi.config.')) {
             const templatePath = path.join(templateDir, file);
             const templateContent = fs.readFileSync(templatePath, 'utf-8');
             const updatedContent = templateContent

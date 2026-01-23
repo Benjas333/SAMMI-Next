@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning].
 
 - /
 
+## [0.0.2] - 2026-01-22
+
+### Added
+
+- README.md
+- keywords in package.json
+
+### Fixed
+
+- Supposedly the place-holder variables not properly replacing.
+
 ## [0.0.1] - 2026-01-22
 
 - Initial release.
