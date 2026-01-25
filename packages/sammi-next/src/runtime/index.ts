@@ -1,5 +1,6 @@
 // <reference types="sammi-bridge-types" />
-import type { ExtensionConfig, SAMMINextExtension } from "./types";
+import type { AuthorInfo } from "@shared/config-types";
+import type { ExtensionConfig, FullExtensionConfig, SAMMINextExtension } from "./types";
 
 window.SAMMIExtensions ??= {};
 const PROXY_PREFIX = "[SAMMI-NEXT-PROXY]";
@@ -54,7 +55,8 @@ export function initExtension(
         id: config.id as string,
         name: config.name as string,
         version: config.version as string,
-        info: config.info as string | undefined,
+        info: config.info as string | undefined ?? "",
+        author: config.author as string | AuthorInfo | (string | AuthorInfo)[] | undefined
     };
 
     window.SAMMIExtensions = window.SAMMIExtensions || {};
@@ -189,5 +191,8 @@ export function insertCommandSection(
     return wrapper;
 }
 
-export type { ExtensionConfig as FullExtensionConfig } from '@shared/config-types';
-export type { ExtensionConfig, SAMMINextExtension };
+export type {
+    ExtensionConfig,
+    FullExtensionConfig,
+    SAMMINextExtension,
+};

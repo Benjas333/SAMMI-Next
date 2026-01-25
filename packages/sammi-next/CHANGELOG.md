@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning].
 
 - /
 
+## [1.6.0] - 2026-01-24
+
+### Added
+
+- `author` param in defineConfig and ExtensionConfig (both).
+
+### Changed
+
+- When using `initExtension()`, `info` will not be possibly undefined and will default to an empty string in the returned parsed config (browser).
+
 ## [1.5.4] - 2026-01-22
 
 ### Fixed

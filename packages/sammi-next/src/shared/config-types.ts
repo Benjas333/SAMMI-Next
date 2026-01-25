@@ -1,5 +1,11 @@
 import type { InlineConfig as TsdownConfig } from "tsdown";
 
+export interface AuthorInfo {
+    name: string,
+    url?: string,
+    email?: string,
+}
+
 /**
  * Represents the full extension config from sammi.config.ts.
  * Used by the CLI to build the extension.
@@ -8,6 +14,8 @@ export interface ExtensionConfig {
     /**
      * Specify a unique id for your extension here.
      * Please use alphanumeric characters, dashes, and underscores only.
+     *
+     * @origin SAMMI Next
      */
     id: string;
 
@@ -38,8 +46,21 @@ export interface ExtensionConfig {
     version: string;
 
     /**
+     * Specify a person who has been involved in creating or maintaining this extension.
+     *
+     * Optional, purely informational. Neither SAMMI Bridge, nor SAMMI Next, nor tsdown use this field.
+     *
+     * @origin SAMMI Next
+     * @default undefined
+     */
+    author?: string | AuthorInfo | (string | AuthorInfo)[];
+
+    /**
      * Specify your script.ts path here.
      * In your [insert_script] section, you’re encouraged to write your own TypeScript code.
+     *
+     * @origin SAMMI Next
+     * @internal
      */
     entry: string;
 
@@ -48,6 +69,8 @@ export interface ExtensionConfig {
      * Your [insert_external] section appears inside the extension’s tab in Bridge,
      * and it provides a visual interface for the extension if needed. It’s written in HTML and CSS.
      *
+     * @origin SAMMI Next
+     * @internal
      * @default undefined
      */
     external?: string;
@@ -57,15 +80,24 @@ export interface ExtensionConfig {
      * In your [insert_over] section you simply copy and paste your deck from SAMMI Core you wish to distribute with your extension.
      * When users install your extension, the deck will be automatically added to their SAMMI Core.
      *
+     * @origin SAMMI Next
+     * @internal
      * @default undefined
      */
     over?: string;
 
-    /** Configuration related with the extension building. */
+    /**
+     * Configuration related with the extension building.
+     *
+     * @origin SAMMI Next
+     * @internal
+     */
     out?: {
         /**
          * The path where the extension will build to.
          *
+         * @origin SAMMI Next
+         * @internal
          * @default "dist"
          */
         dir?: string;
@@ -73,6 +105,8 @@ export interface ExtensionConfig {
         /**
          * The file name of the final JavaScript file.
          *
+         * @origin SAMMI Next
+         * @internal
          * @default "extension.js"
          */
         js?: string;
@@ -80,6 +114,8 @@ export interface ExtensionConfig {
         /**
          * The file name of the final SAMMI Extension File.
          *
+         * @origin SAMMI Next
+         * @internal
          * @default "extension.sef"
          */
         sef?: string;
@@ -90,6 +126,8 @@ export interface ExtensionConfig {
      *
      * **Use with caution; ensure you understand the implications.**
      *
+     * @origin tsdown
+     * @internal
      * @default undefined
      */
     tsdownConfig?: TsdownConfig,
@@ -118,9 +156,11 @@ export function defineConfig(config: ExtensionConfig): ExtensionConfig {
 /**
  * Resolved extension config with defaults applied.
  * Used internally by the builder.
- * 
+ *
  * @internal
  */
-export interface ResolvedExtensionConfig extends Required<Omit<ExtensionConfig, 'out'>> {
+export interface ResolvedExtensionConfig extends Required<Omit<ExtensionConfig, 'out' | 'author'>> {
     out: Required<NonNullable<ExtensionConfig['out']>>;
+
+    author?: ExtensionConfig['author'];
 }

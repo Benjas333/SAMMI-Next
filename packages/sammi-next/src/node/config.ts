@@ -1,6 +1,6 @@
 
 
-import { ExtensionConfig, ResolvedExtensionConfig } from "@shared/config-types";
+import { AuthorInfo, ExtensionConfig, ResolvedExtensionConfig } from "@shared/config-types";
 import Ajv, { JSONSchemaType } from "ajv";
 import fs from "node:fs";
 import path from "node:path";
@@ -20,6 +20,28 @@ ajv.addKeyword({
     },
     errors: false
 });
+
+const authorObjectSchema: JSONSchemaType<AuthorInfo> = {
+    type: "object",
+    properties: {
+        name: {
+            type: "string",
+            minLength: 1,
+        },
+        url: {
+            type: "string",
+            format: "url",
+            nullable: true,
+        },
+        email: {
+            type: "string",
+            format: "email",
+            nullable: true,
+        },
+    },
+    required: ["name"],
+    additionalProperties: false,
+};
 
 const schema: JSONSchemaType<ExtensionConfig> = {
     type: "object",
@@ -43,6 +65,24 @@ const schema: JSONSchemaType<ExtensionConfig> = {
             type: "string",
             minLength: 1,
             pattern: "^\\d+(?:\\.\\d+)*(?:-.*)?$",
+        },
+        author: {
+            anyOf: [
+                { type: "string" },
+                authorObjectSchema,
+
+                {
+                    type: "array",
+                    items: {
+                        anyOf: [
+                            { type: "string" },
+                            authorObjectSchema,
+                        ],
+                    },
+                },
+            ],
+            default: undefined,
+            nullable: true,
         },
         entry: {
             type: "string",

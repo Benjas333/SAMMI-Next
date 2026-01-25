@@ -1,4 +1,5 @@
 import type { SAMMICommands, SAMMIWebSocket } from 'sammi-bridge-types';
+import type { ExtensionConfig as FullExtensionConfig } from "@shared/config-types";
 
 declare global {
     /**
@@ -39,14 +40,34 @@ declare global {
  * Represents useful data from the sammi.config.js.
  */
 export interface ExtensionConfig {
-    /** Name of the extension. It is visible in SAMMI Bridge and SAMMI Core. */
-    name: string;
-    /** Unique id of the extension. */
-    id: string;
-    /** Descriptive text about the extension, e.g. what the extension does. Is displayed to the users in SAMMI Bridge-Extensions tab when they hover over the extension name inside the list of installed extensions. */
-    info?: string;
-    /** Extension version, using numbers and dots (e.g., 2.01). Used by the automatic version checker in Bridge, which can notify users of updates. */
-    version: string;
+    /**
+     * Unique id of the extension.
+     */
+    id: FullExtensionConfig['id'];
+
+    /**
+     * Name of the extension. It is visible in SAMMI Bridge and SAMMI Core.
+     */
+    name: FullExtensionConfig['name'];
+
+    /**
+     * Descriptive text about the extension, e.g. what the extension does.
+     * Is displayed to the users in SAMMI Bridge-Extensions tab when they hover over the extension name inside the list of installed extensions.
+     */
+    info: FullExtensionConfig['info'];
+
+    /**
+     * Extension version, using numbers and dots (e.g., 2.01).
+     * Used by the automatic version checker in Bridge, which can notify users of updates.
+     */
+    version: FullExtensionConfig['version'];
+
+    /**
+     * Specify a person who has been involved in creating or maintaining this extension.
+     *
+     * @default undefined
+     */
+    author?: FullExtensionConfig['author'];
 }
 
 /**
@@ -57,3 +78,5 @@ export interface SAMMINextExtension {
     readonly _config?: ExtensionConfig;
     readonly [key: string]: unknown;
 }
+
+export { FullExtensionConfig };
