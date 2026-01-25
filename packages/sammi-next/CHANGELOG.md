@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning].
 
 - /
 
+## [1.6.1] - 2026-01-25
+
+### Fixed
+
+- Ajv crash on cli (node).
+
 ## [1.6.0] - 2026-01-24
 
 ### Added

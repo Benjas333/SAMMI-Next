@@ -8,7 +8,7 @@ import { DEFAULT_CONFIG_EXTENSIONS } from "./constants";
 import { BuildCLIOptions } from "./cli";
 import { BuildModes, mergeBuilderOptions, ResolvedBuildOptions } from "./build";
 
-const ajv = new Ajv();
+const ajv = new Ajv({ allowUnionTypes: true });
 
 ajv.addKeyword({
     keyword: "fileExists",
@@ -26,16 +26,16 @@ const authorObjectSchema: JSONSchemaType<AuthorInfo> = {
     properties: {
         name: {
             type: "string",
-            minLength: 1,
+            // minLength: 1,
         },
         url: {
             type: "string",
-            format: "url",
+            // format: "uri",
             nullable: true,
         },
         email: {
             type: "string",
-            format: "email",
+            // format: "email",
             nullable: true,
         },
     },
@@ -67,7 +67,8 @@ const schema: JSONSchemaType<ExtensionConfig> = {
             pattern: "^\\d+(?:\\.\\d+)*(?:-.*)?$",
         },
         author: {
-            anyOf: [
+            type: ["string", "object", "array"],
+            oneOf: [
                 { type: "string" },
                 authorObjectSchema,
 
