@@ -39,10 +39,6 @@ export default defineConfig([
                 'error',
                 { varsIgnorePattern: '^[A-Z_]' }
             ],
-            "@typescript-eslint/no-explicit-any": [
-                "warn",
-                { fixToUnknown: true },
-            ],
         },
     },
     {

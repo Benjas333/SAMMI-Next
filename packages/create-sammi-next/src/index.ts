@@ -28,6 +28,8 @@ const argv = mri<{
 const cwd = process.cwd();
 
 const helpMessage = `\
+create-sammi-next/${VERSION}
+
 Usage create-sammi-next [OPTION]... [EXTENSION_ID]
 
 Create a new SAMMI Next extension project in TypeScript or JavaScript.

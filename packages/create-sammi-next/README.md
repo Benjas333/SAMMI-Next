@@ -34,7 +34,7 @@ deno init --npm sammi-next
 
 Then follow the prompts!
 
-You can also directly specify the project name and the template you want to use via additional command line options. For example, to scaffold the TypeScript sample extension template, run:
+You can also directly specify the extension name and the template you want to use via additional command line options. For example, to scaffold the TypeScript sample extension template, run:
 ```bash
 # npm
 npm create sammi-next@latest my-sammi-extension -- --template sample-ts
@@ -59,8 +59,6 @@ Currently supported template presets include:
 - `sample-js`
 - `minimal-ts`
 - `minimal-js`
-
-You can use `.` for the project name to scaffold in the current directory.
 
 ## TODO
 - `react-ts`

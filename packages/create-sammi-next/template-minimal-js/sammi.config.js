@@ -1,4 +1,5 @@
-import { defineConfig } from 'sammi-next/config'
+// @ts-check
+import { defineConfig } from 'sammi-next/config';
 
 export default defineConfig({
     id: "{{EXTENSION_ID}}",

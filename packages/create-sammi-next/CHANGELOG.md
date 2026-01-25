@@ -9,6 +9,25 @@ and this project adheres to [Semantic Versioning].
 
 - /
 
+## [1.1.0] - 2026-01-25
+
+### Added
+
+- Package version is now printed on the --help message.
+
+### Changed
+
+- Inserted some missing semicolons in templates.
+- Minor typos on README.md
+
+### Removed
+
+- A TypeScript eslint rule with no effect from the JavaScript templates.
+
+### Fixed
+
+- Use `@typescript-eslint/no-unused-vars` in TypeScript templates (previously `no-unused-vars`).
+
 ## [1.0.0] - 2026-01-22
 
 ### Changed
