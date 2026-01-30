@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning].
 
 - /
 
+## [1.1.1] - 2026-01-30
+
+### Added
+
+- Added `--watch` param to the dev script in all the templates.
+
+### Changed
+
+- Updated the sammi-next dependency version to 1.7.0 in all the templates.
+
 ## [1.1.0] - 2026-01-25
 
 ### Added

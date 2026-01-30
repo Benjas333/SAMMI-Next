@@ -18,7 +18,7 @@
     },
     "packages/create-sammi-next": {
       "name": "create-sammi-next",
-      "version": "0.0.2",
+      "version": "1.1.0",
       "bin": {
         "create-sammi-next": "index.js",
         "csn": "index.js",
@@ -64,7 +64,7 @@
     },
     "packages/sammi-next": {
       "name": "sammi-next",
-      "version": "1.5.2",
+      "version": "1.7.0",
       "bin": {
         "sammi-next": "./bin/sammi-next.mjs",
       },

@@ -10,12 +10,12 @@
         "typescript-eslint": "^8.53.0"
     },
     "scripts": {
-        "dev": "sammi-next dev",
+        "dev": "sammi-next dev --watch",
         "build": "sammi-next",
         "lint": "eslint ."
     },
     "type": "module",
     "dependencies": {
-        "sammi-next": "^1.5.4"
+        "sammi-next": "^1.7.0"
     }
 }
