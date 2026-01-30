@@ -1,4 +1,51 @@
 import type { InlineConfig as TsdownConfig } from "tsdown";
+import { Logger, LogLevelKey } from "./logger-types";
+import type { BuildModeKey } from "./build-types";
+
+export interface NextConfig {
+    /**
+     * Explicitly set a mode to run in.
+     * This will override the default mode for each command, and can be overridden by the command line --mode option.
+     */
+    mode?: BuildModeKey
+
+    /**
+     * Log level.
+     *
+     * @default 'info'
+     */
+    logLevel?: LogLevelKey
+
+    /**
+     * Custom logger.
+     */
+    customLogger?: Logger
+
+    /**
+     * @default true
+     */
+    clearScreen?: boolean
+
+    /**
+     * Rebuilds when files have changed on disk.
+     * This can be overridden by the command line --watch option.
+     *
+     * @default false
+     */
+    watch?: boolean
+}
+
+export interface ResolvedNextConfig extends Required<
+    Omit<
+        NextConfig,
+        | 'mode'
+        | 'customLogger'
+    >
+> {
+    mode: NextConfig['mode'];
+
+    customLogger: NextConfig['customLogger'];
+}
 
 export interface AuthorInfo {
     name: string,
@@ -122,6 +169,15 @@ export interface ExtensionConfig {
     },
 
     /**
+     * Additional config for SAMMI Next.
+     *
+     * @origin SAMMI Next
+     * @internal
+     * @default undefined
+    */
+    nextConfig?: NextConfig
+
+    /**
      * Overrides the tsdown building config.
      *
      * **Use with caution; ensure you understand the implications.**
@@ -159,8 +215,17 @@ export function defineConfig(config: ExtensionConfig): ExtensionConfig {
  *
  * @internal
  */
-export interface ResolvedExtensionConfig extends Required<Omit<ExtensionConfig, 'out' | 'author'>> {
+export interface ResolvedExtensionConfig extends Required<
+    Omit<
+        ExtensionConfig,
+        | 'out'
+        | 'author'
+        | 'nextConfig'
+    >
+> {
     out: Required<NonNullable<ExtensionConfig['out']>>;
 
     author?: ExtensionConfig['author'];
+
+    nextConfig: ResolvedNextConfig;
 }

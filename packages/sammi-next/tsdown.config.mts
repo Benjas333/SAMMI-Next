@@ -4,7 +4,7 @@ import nodePolyfills from '@rolldown/plugin-node-polyfills';
 export default defineConfig([
     {
         entry: {
-            'runtime/index': 'src/runtime/index.ts',
+            'browser/index': 'src/browser/index.ts',
 
             'shared/config-types': 'src/shared/config-types.ts',
         },

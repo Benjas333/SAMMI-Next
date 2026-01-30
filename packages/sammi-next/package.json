@@ -1,6 +1,6 @@
 {
     "name": "sammi-next",
-    "version": "1.6.1",
+    "version": "1.7.0",
     "author": {
         "name": "Benjas333",
         "url": "https://github.com/Benjas333"
@@ -14,8 +14,8 @@
         "url": "https://github.com/Benjas333/SAMMI-Next/issues"
     },
     "homepage": "https://github.com/Benjas333/SAMMI-Next",
-    "main": "./dist/runtime/index.js",
-    "module": "./dist/runtime/index.js",
+    "main": "./dist/browser/index.js",
+    "module": "./dist/browser/index.js",
     "dependencies": {
         "ajv": "^8.17.1",
         "cac": "^6.7.14",
@@ -27,15 +27,12 @@
     },
     "exports": {
         ".": {
-            "types": "./dist/runtime/index.d.ts",
-            "import": "./dist/runtime/index.js"
+            "types": "./dist/browser/index.d.ts",
+            "import": "./dist/browser/index.js"
         },
         "./config": {
             "types": "./dist/shared/config-types.d.ts",
             "import": "./dist/shared/config-types.js"
-        },
-        "./global": {
-            "types": "./src/runtime/global.d.ts"
         }
     },
     "bin": {
@@ -64,7 +61,7 @@
         "prepublishOnly": "bun run build"
     },
     "type": "module",
-    "types": "./dist/runtime/index.d.ts",
+    "types": "./dist/browser/index.d.ts",
     "devDependencies": {
         "@rolldown/plugin-node-polyfills": "^1.0.0",
         "@types/lodash": "^4.17.23",

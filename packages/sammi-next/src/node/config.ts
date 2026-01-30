@@ -5,8 +5,11 @@ import Ajv, { JSONSchemaType } from "ajv";
 import fs from "node:fs";
 import path from "node:path";
 import { DEFAULT_CONFIG_EXTENSIONS } from "./constants";
-import { BuildCLIOptions } from "./cli";
-import { BuildModes, mergeBuilderOptions, ResolvedBuildOptions } from "./build";
+import { BuilderCLIOptions, GlobalCLIOptions } from "./cli";
+import { mergeBuilderOptions, ResolvedBuildOptions } from "./build";
+import { createLogger } from "./logger";
+import { LogLevel, LogLevels } from "@shared/logger-types";
+import { BuildMode, BuildModeKey, BuildModes } from "@shared/build-types";
 
 const ajv = new Ajv({ allowUnionTypes: true });
 
@@ -131,6 +134,12 @@ const schema: JSONSchemaType<ExtensionConfig> = {
             nullable: true,
             additionalProperties: false,
         },
+        nextConfig: {
+            type: "object",
+            required: [],
+            nullable: true,
+            additionalProperties: true,
+        },
         tsdownConfig: {
             type: "object",
             required: [],
@@ -144,42 +153,6 @@ const schema: JSONSchemaType<ExtensionConfig> = {
 
 const configValidator = ajv.compile(schema);
 
-export async function loadConfig(rootDir: string) {
-    for (const ext of DEFAULT_CONFIG_EXTENSIONS) {
-        const configPath = path.join(rootDir, `sammi.config${ext}`);
-
-        if (!fs.existsSync(configPath)) continue;
-
-        try {
-            const { createJiti } = await import('jiti');
-            const jiti = createJiti(rootDir, {
-                interopDefault: true,
-                moduleCache: true,
-            });
-
-            const config = await jiti.import(configPath, { default: true });
-
-            return validateExtensionConfig(config, configPath);
-        } catch (error) {
-            throw new Error(`Error loading ${configPath}: ${error instanceof Error ? error.message : String(error)}`);
-        }
-    }
-
-    const jsonPath = path.join(rootDir, 'sammi.config.json');
-    if (fs.existsSync(jsonPath)) {
-        try {
-            const raw = fs.readFileSync(jsonPath, 'utf-8');
-            const config = JSON.parse(raw) as unknown;
-            return validateExtensionConfig(config, jsonPath);
-        } catch (error) {
-            throw new Error(`Error loading ${jsonPath}: ${error instanceof Error ? error.message : String(error)}`);
-        }
-    }
-
-    throw new Error('SAMMI Next extension config file not found in the root dir.');
-}
-
-
 function validateExtensionConfig(config: unknown, configPath: string): ExtensionConfig {
     if (!configValidator(config)) {
         const errors = configValidator.errors?.map(err => `    - ${err.instancePath} ${err.message}`).join('\n');
@@ -189,7 +162,47 @@ function validateExtensionConfig(config: unknown, configPath: string): Extension
     return config;
 }
 
-export function resolveExtensionConfig(config: ExtensionConfig, rootDir: string): ResolvedExtensionConfig {
+async function loadConfigFromPath(rootDir: string, path: string) {
+    try {
+        const { createJiti } = await import('jiti');
+        const jiti = createJiti(rootDir, {
+            interopDefault: true,
+            moduleCache: true,
+        });
+
+        const config = await jiti.import(path, { default: true });
+
+        return validateExtensionConfig(config, path);
+    } catch (error) {
+        throw new Error(`Error loading ${path}:\n${error instanceof Error ? error.message : String(error)}`);
+    }
+}
+
+export async function loadConfig(rootDir: string, customFile?: string) {
+    if (customFile) {
+        const configPath = path.join(rootDir, customFile);
+
+        if (!fs.existsSync(configPath))
+            throw new Error(`The custom config file path was not found: ${configPath}`);
+
+        return await loadConfigFromPath(rootDir, configPath);
+    }
+
+    for (const ext of DEFAULT_CONFIG_EXTENSIONS) {
+        const configPath = path.join(rootDir, `sammi.config${ext}`);
+
+        if (!fs.existsSync(configPath)) continue;
+
+        return await loadConfigFromPath(rootDir, configPath);
+    }
+
+    throw new Error('SAMMI Next extension config file not found in the root dir.');
+}
+
+export function resolveExtensionConfig(
+    config: ExtensionConfig,
+    rootDir: string
+): ResolvedExtensionConfig {
     const resolved: ResolvedExtensionConfig = {
         id: config.id,
         name: config.name,
@@ -202,6 +215,13 @@ export function resolveExtensionConfig(config: ExtensionConfig, rootDir: string)
             dir: config.out?.dir || 'dist',
             js: config.out?.js || 'extension.js',
             sef: config.out?.sef || 'extension.sef',
+        },
+        nextConfig: {
+            mode :config.nextConfig?.mode,
+            logLevel: config.nextConfig?.logLevel || "info",
+            customLogger: config.nextConfig?.customLogger,
+            clearScreen: config.nextConfig?.clearScreen ?? true,
+            watch: config.nextConfig?.watch ?? false,
         },
         tsdownConfig: config.tsdownConfig || {},
     };
@@ -218,33 +238,46 @@ export function resolveExtensionConfig(config: ExtensionConfig, rootDir: string)
     return resolved;
 }
 
-export async function resolveBuildConfig(
+export async function resolveConfig(
     root: string | undefined,
-    command: string,
-    build_cli: BuildCLIOptions,
-) {
-    const mode = BuildModes.findIndex(m => {
-        return m.toLowerCase() === command.toLowerCase();
-    });
-    if (mode < 0)
-        throw new Error(`Invalid mode: ${command}. It must be one of: ${BuildModes.join(', ')}`);
-
+    command: BuildModeKey,
+    globalCLI: GlobalCLIOptions,
+    builderCLI: BuilderCLIOptions,
+): Promise<ResolvedBuildOptions> {
     const rootDir = root ?? process.cwd();
-    const config = await loadConfig(rootDir);
+    const config = await loadConfig(rootDir, globalCLI.config);
 
     config.out ??= {};
 
-    config.out.dir = build_cli.outDir ?? config.out.dir;
-    config.out.js = build_cli.outJs ?? config.out.js;
-    config.out.sef = build_cli.outSef ?? config.out.sef;
+    config.out.dir = builderCLI.outDir ?? config.out.dir;
+    config.out.js = builderCLI.outJs ?? config.out.js;
+    config.out.sef = builderCLI.outSef ?? config.out.sef;
+
+    config.nextConfig ??= {};
+
+    if (globalCLI.logLevel != null && !LogLevels.includes(globalCLI.logLevel))
+        throw new Error(`Invalid logLevel: ${globalCLI.logLevel}. It must be one of: ${LogLevels.join(', ')}`);
+
+    if (globalCLI.mode != null && !BuildModes.includes(globalCLI.mode))
+        throw new Error(`Invalid mode: ${globalCLI.mode}. It must be one of: ${BuildModes.join(', ')}`);
+
+    const mode = globalCLI.mode ?? config.nextConfig.mode ?? command;
+    config.nextConfig.mode = mode;
+    config.nextConfig.logLevel = globalCLI.logLevel ?? config.nextConfig.logLevel;
+    config.nextConfig.clearScreen = globalCLI.clearScreen ?? config.nextConfig.clearScreen;
+    config.nextConfig.watch = builderCLI.watch ?? config.nextConfig.watch;
 
     const resolvedConfig = resolveExtensionConfig(config, rootDir);
 
     const resolved: ResolvedBuildOptions = {
+        config: resolvedConfig,
         rootDir,
-        mode,
-        config: resolvedConfig
-    }
+        mode: BuildMode[mode],
+        logger: createLogger(LogLevel[resolvedConfig.nextConfig.logLevel], {
+            allowClearScreen: resolvedConfig.nextConfig.clearScreen,
+            customLogger: resolvedConfig.nextConfig.customLogger,
+        })
+    };
 
     resolved.config.tsdownConfig = mergeBuilderOptions(resolved);
     return resolved;

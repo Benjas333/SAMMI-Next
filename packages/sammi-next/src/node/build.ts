@@ -4,22 +4,18 @@ import colors from 'picocolors';
 import chokidar from 'chokidar';
 import { ResolvedExtensionConfig } from "@shared/config-types";
 import { build, InlineConfig as TsdownConfig, TsdownBundle } from "tsdown";
-import { BUILD_PREFIX, GLOBAL_NAME, GREEN_CHECK, RED_X, SAMMI_NEXT_PACKAGE_DIR, VERSION } from "./constants";
+import { GLOBAL_NAME, SAMMI_NEXT_PACKAGE_DIR, VERSION } from "./constants";
 import { displayTime } from './utils';
 import lodash from 'lodash';
+import { Logger } from '@shared/logger-types';
+import { BuildMode } from '@shared/build-types';
 // import nodePolyfills from '@rolldown/plugin-node-polyfills';
-
-export enum BuildMode {
-    DEV,
-    PRODUCTION,
-}
-
-export const BuildModes = Object.keys(BuildMode).filter(key => isNaN(Number(key)));
 
 export interface BuildOptions {
     config: ResolvedExtensionConfig;
     rootDir: string;
     mode?: BuildMode;
+    logger?: Logger;
 }
 
 export type ResolvedBuildOptions = Required<BuildOptions>;
@@ -30,13 +26,64 @@ function readOptionalFile(path: string): string | undefined {
     return fs.readFileSync(path, 'utf-8');
 }
 
-const CommandRE = /\w+\(\w+,\s*{\s*default:/gm;
+function hasDefaultExportFallback(options: ResolvedBuildOptions): boolean {
+    const { rootDir, config, logger } = options;
+    const jsPath = path.join(rootDir, config.out.dir, config.out.js);
+    const CommandRE = /SAMMIExtensions\s*\|\|\s*{}[;,]\n?\(function\((\w+)\)\s*{.*\1.default\s*=\s*\w+/s;
+
+    try {
+        const jsScript = fs.readFileSync(jsPath, "utf-8");
+        return CommandRE.test(jsScript);
+    } catch (error) {
+        logger.warn(colors.yellow(`Error reading built file: ${jsPath}
+${error instanceof Error ? error.message : String(error)}
+Skipping [insert_command] section...`));
+        return false;
+    }
+}
+
+// TODO: find a better way for the default export analyzer
+// async function hasDefaultExport(options: ResolvedBuildOptions): Promise<boolean> {
+//     const { rootDir, config, logger } = options;
+
+//     try {
+//         const { createJiti } = await import('jiti');
+//         const jiti = createJiti(rootDir, {
+//             interopDefault: true,
+//             moduleCache: false,
+//         });
+
+//         const defaultExport = await jiti.import(config.entry, { default: true });
+
+//         return typeof defaultExport === 'function';
+//         // const script = fs.readFileSync(config.entry, "utf-8");
+
+//         // const ast = parser.parse(script, {
+//         //     sourceType: 'module',
+//         //     plugins: ['typescript', 'jsx'],
+//         // });
+
+//         // let hasDefault = false;
+//         // traverse(ast, {
+//         //     ExportDefaultDeclaration() {
+//         //         hasDefault = true;
+//         //     },
+//         // });
+
+//         // return hasDefault;
+//     } catch (error) {
+//         logger.warn(`Error analyzing entry file: ${config.entry}
+// ${error instanceof Error ? error.message : String(error)}
+// Trying regex on built JS file...`);
+//         return hasDefaultExportFallback(options);
+//     }
+// }
 
 function generateSEF(options: ResolvedBuildOptions): string {
     const { config, rootDir, mode } = options;
     const content = [];
 
-    const required_files: {
+    const requiredFiles: {
         header: string,
         content: string,
     }[] = [
@@ -54,23 +101,57 @@ function generateSEF(options: ResolvedBuildOptions): string {
         },
     ]
 
-    for (const field of required_files) {
-        content.push(`[${field.header}]`, field.content, "");
+    for (const field of requiredFiles) {
+        content.push(
+            `[${field.header}]`,
+            field.content,
+            "",
+        );
     }
 
     const external = readOptionalFile(config.external);
-    content.push("[insert_external]", external ? `<div id="${config.id}-external">${external}</div>` : "", "");
+    content.push(
+        "[insert_external]",
+        external
+            ? `\
+<div id="${config.id}-external">
+${external}
+</div>`.trim()
+            : "",
+        ""
+    );
 
-    const js_script = fs.readFileSync(path.join(rootDir, config.out.dir, config.out.js), "utf-8");
-    content.push("[insert_command]", CommandRE.test(js_script) ? `${GLOBAL_NAME}.${config.id}.default()` : "", "");
-    content.push("[insert_hook]", "", "") // TODO: maybe add hook retro-compatibility
-    content.push("[insert_script]", js_script, "");
+    content.push(
+        "[insert_command]",
+        hasDefaultExportFallback(options)
+            ? `${GLOBAL_NAME}['${config.id}'].default()`
+            : "",
+        "",
+    );
+    content.push(
+        "[insert_hook]",
+        "", // TODO: maybe add hook retro-compatibility
+        "",
+    );
+
+    const jsScript = fs.readFileSync(path.join(rootDir, config.out.dir, config.out.js), "utf-8");
+    content.push(
+        "[insert_script]",
+        jsScript,
+        "",
+    );
 
     let over = readOptionalFile(config.over);
-    if (over && mode === BuildMode.PRODUCTION) {
+    if (over && mode === BuildMode.production) {
         over = JSON.stringify(JSON.parse(over));
     }
-    content.push("[insert_over]", over && over != "{}" ? over : "", "");
+    content.push(
+        "[insert_over]",
+        over && over != "{}"
+            ? over
+            : "",
+        "",
+    );
     return content.join("\n");
 }
 
@@ -95,7 +176,7 @@ export function mergeBuilderOptions(options: BuildOptions) {
         format: 'iife',
         target: ['es2022'],
         sourcemap: false,
-        minify: mode === BuildMode.PRODUCTION,
+        minify: mode === BuildMode.production,
         banner: {
             js: `/* ${config.name} v${config.version} - Built with SAMMI Next v${VERSION} */`,
         },
@@ -107,6 +188,27 @@ export function mergeBuilderOptions(options: BuildOptions) {
             exports: 'named',
         },
         inlineOnly: ["**"],
+        // customLogger: {
+        //     level: config.nextConfig.logLevel === "success" ? "info" : config.nextConfig.logLevel,
+        //     error(...args) {
+        //         options.logger?.error(args.join(" "));
+        //     },
+        //     info(...args) {
+        //         options.logger?.info(args.join(" "));
+        //     },
+        //     success(...args) {
+        //         options.logger?.success(args.join(" "));
+        //     },
+        //     warn(...args) {
+        //         options.logger?.warn(args.join(" "));
+        //     },
+        //     warnOnce(...args) {
+        //         options.logger?.warnOnce(args.join(" "));
+        //     },
+        //     clearScreen(type) {
+        //         options.logger?.clearScreen(LogLevel[type]);
+        //     },
+        // }
         // plugins: [
         //     nodePolyfills(),
         // ],
@@ -115,32 +217,32 @@ export function mergeBuilderOptions(options: BuildOptions) {
 }
 
 async function buildOnce(options: ResolvedBuildOptions) {
-    const { config, rootDir } = options;
+    const { config, rootDir, logger } = options;
 
     const startTime = Date.now();
     const bundle = await build(options.config.tsdownConfig);
     const tsdownTime = Date.now();
-    console.info(GREEN_CHECK, BUILD_PREFIX, `built ${config.out.js} in ${displayTime(tsdownTime - startTime)}`);
+    logger.success(`built ${config.out.js} in ${displayTime(tsdownTime - startTime)}`);
 
     fs.writeFileSync(path.join(rootDir, config.out.dir, config.out.sef), generateSEF(options), 'utf-8');
     const sefTime = Date.now();
-    console.info(GREEN_CHECK, BUILD_PREFIX, `built ${config.out.sef} in ${displayTime(sefTime - tsdownTime)}`);
+    logger.success(`built ${config.out.sef} in ${displayTime(sefTime - tsdownTime)}`);
 
     fs.writeFileSync(path.join(rootDir, config.out.dir, "preview.html"), generatePreview(options), 'utf-8');
     const previewTime = Date.now();
-    console.info(GREEN_CHECK, BUILD_PREFIX, `built preview.html in ${displayTime(previewTime - sefTime)}`);
+    logger.success(`built preview.html in ${displayTime(previewTime - sefTime)}`);
     return { bundle, startTime };
 }
 
 export async function buildExtension(options: ResolvedBuildOptions) {
-    const { config, mode } = options;
+    const { config, mode, logger } = options;
 
-    console.info(
+    logger.info(
         colors.cyan(
             `SAMMI Next v${VERSION} ${colors.green(
-                `building "${config.name}" extension in ${BuildMode[mode].toLowerCase()} mode...`
+                `building "${config.name}" extension in ${BuildMode[mode]} mode...`
             )}`
-        ),
+        )
     );
 
     let bundle: TsdownBundle[] | undefined;
@@ -151,9 +253,10 @@ export async function buildExtension(options: ResolvedBuildOptions) {
         bundle = res.bundle;
         startTime = res.startTime;
 
-        if (options.mode !== BuildMode.DEV) return bundle;
+        if (!config.nextConfig.watch)
+            return bundle;
 
-        console.info(BUILD_PREFIX, colors.cyan("watching for file changes..."));
+        logger.info("watching for file changes...");
 
         const watchPaths = [
             path.dirname(config.entry),
@@ -165,7 +268,7 @@ export async function buildExtension(options: ResolvedBuildOptions) {
         let timer: NodeJS.Timeout | null = null;
 
         watcher.on('all', (event, p) => {
-            console.info(colors.cyan(`${event}: ${p}`));
+            logger.info(`${event}: ${p}`);
             if (timer)
                 clearTimeout(timer);
 
@@ -173,24 +276,24 @@ export async function buildExtension(options: ResolvedBuildOptions) {
                 buildOnce(options).then(res => {
                     bundle = res.bundle;
                     startTime = res.startTime;
-                }).catch(e => console.error(e));
+                }).catch((e: Error) => logger.error(e.stack || e.message, { error: e }));
             }, 100);
         });
 
         process.on('SIGINT', () => {
-            console.info("\nStopping watch mode...");
+            logger.info("Stopping watch mode...");
             watcher
                 .close()
                 .then(() => process.exit(0))
-                .catch(e => {
-                    console.error(e);
+                .catch((e: Error) => {
+                    logger.error(e.stack || e.message, { error: e });
                     process.exit(1);
                 });
         });
         return watcher;
     } catch (error) {
         if (startTime) {
-            console.error(RED_X, BUILD_PREFIX, `Build failed in ${displayTime(Date.now() - startTime)}`);
+            logger.error(`Build failed in ${displayTime(Date.now() - startTime)}`);
             startTime = undefined;
         }
         throw error;

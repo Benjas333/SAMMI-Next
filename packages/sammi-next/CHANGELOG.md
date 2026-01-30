@@ -9,6 +9,33 @@ and this project adheres to [Semantic Versioning].
 
 - /
 
+## [1.7.0] - 2026-01-30
+
+### Added
+
+- --config, --logLevel, and --clearScreen cli global params (node).
+- --watch cli build param (node).
+- `build` alias for sammi-next (node).
+- validation for modes and logLevels strings (node).
+- `.cts`, `.cjs`, and `.json` extensions for sammi.config.* (node).
+- more icons for logs (node).
+- Logger class and interface (node).
+- `nextConfig.mode`, `nextConfig.logLevel`, `nextConfig.customLogger`, `nextConfig.clearScreen`, and `nextConfig.watch` options for sammi.config.* (browser).
+
+### Changed
+
+- changed directory runtime/ to browser/ (browser).
+- moved some interfaces into shared/*-types.ts (both).
+- improved the regex to determine if extension entry has a default export (to know whether to insert \[insert_command\] section) (node).
+- slightly improved readability (both).
+- improved logs because of the Logger class (node).
+- improved --help texts (node).
+- highly improved config merging and handling (node).
+
+### Fixed
+
+- \[insert_command\] section was not being inserted when building (node).
+
 ## [1.6.1] - 2026-01-25
 
 ### Fixed

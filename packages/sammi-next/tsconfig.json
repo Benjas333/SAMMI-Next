@@ -21,7 +21,7 @@
         "isolatedModules": false,
 
         "paths": {
-            "@runtime/*": ["./src/runtime/*"],
+            "@browser/*": ["./src/browser/*"],
             "@node/*": ["./src/node/*"],
             "@shared/*": ["./src/shared/*"],
         },
