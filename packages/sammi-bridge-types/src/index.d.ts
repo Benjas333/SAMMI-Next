@@ -3,7 +3,7 @@ import type { SAMMICommands as UnpatchedCommands } from './SAMMICommands';
 import { CommandBoxesUnion } from './commandBoxes';
 
 // export type commandBoxes = Record<string, [boxName: string, boxType: number, defaultValue: (string | number), sizeModifier: (number | undefined), selectOptions: any[] | undefined]>
-export type CommandBoxesObj = Record<string, CommandBoxesUnion>
+export type CommandBoxesObj = Record<string, CommandBoxesUnion>;
 
 
 declare class SAMMICommands extends UnpatchedCommands {
