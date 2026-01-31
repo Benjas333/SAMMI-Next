@@ -1,4 +1,4 @@
-import { defineConfig } from 'eslint/config';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
@@ -46,17 +46,15 @@ export default defineConfig([
             ]
         }
     },
-    {
-        ignores: [
-            "node_modules/**/*",
-            'packages/create-sammi-next/template-*',
-            '**/dist/**',
-            '**/lib/**',
-            '**/bin/**',
-            '**/temp/**',
-            'vendor/**/*',
-            '**/*.d.ts',
-            'eslint.config.*'
-        ],
-    },
+    globalIgnores([
+        "node_modules/**/*",
+        'packages/create-sammi-next/template-*',
+        '**/dist/**',
+        '**/lib/**',
+        '**/bin/**',
+        '**/temp/**',
+        'vendor/**/*',
+        // '**/*.d.ts',
+        'eslint.config.*',
+    ]),
 ]);

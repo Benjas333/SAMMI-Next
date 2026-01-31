@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /** SAMMI Core Helper Functions
  * You can call them with SAMMI.{helperfunction}
  * Use promises if you want to get a reply back from SAMMI

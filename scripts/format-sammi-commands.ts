@@ -11,7 +11,7 @@ function run() {
         throw new Error('SAMMICommands.d.ts does not exists. Run `bun run --filter sammi-bridge-types gen:types`')
 
     const file = fs.readFileSync(INPUT_FILE, { encoding: 'utf-8' });
-    fs.writeFileSync(OUT_FILE, file.replace(REGEX, 'class $1'), 'utf-8');
+    fs.writeFileSync(OUT_FILE, "/* eslint-disable @typescript-eslint/no-explicit-any */\n" + file.replace(REGEX, 'class $1'), 'utf-8');
 }
 
 try {

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning].
 
 - /
 
+## [1.2.0] - 2026-01-31
+
+### Added
+
+- commandBoxes types for better typing in SAMMI.extCommands().
+
 ## [1.1.1] - 2026-01-22
 
 ### Removed
